@@ -1,20 +1,22 @@
 import os
 
-# Hardcoded secret (security issue)
-API_KEY = "sk-1234567890abcdef"
+# Use environment variable for secret
+API_KEY = os.getenv('API_KEY')
 
 def get_user(user_id):
-    # SQL injection vulnerability
-    query = f"SELECT * FROM users WHERE id = {user_id}"
-    return execute_query(query)
+    # Parameterized query to prevent SQL injection
+    query = "SELECT * FROM users WHERE id = %s"
+    return execute_query(query, (user_id,))
 
 def process_data(data):
-    # No error handling
-    result = data["key"]["nested"]["value"]
-    file = open("/tmp/output.txt", "w")
-    file.write(str(result))
-    # File handle never closed
+    try:
+        result = data["key"]["nested"]["value"]
+    except KeyError:
+        result = None
+    with open("/tmp/output.txt", "w") as file:
+        file.write(str(result))
 
 def divide(a, b):
-    # No zero division check
+    if b == 0:
+        raise ValueError("Division by zero is not allowed")
     return a / b
