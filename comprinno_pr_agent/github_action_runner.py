@@ -69,6 +69,9 @@ def get_trigger_comment(github: GitHubProvider) -> dict:
     except Exception:
         pass
     return {}
+
+
+def get_previous_comments_context(github: GitHubProvider) -> str:
     """Extract all previous agent comments as context string for Bedrock"""
     previous_comments = github.get_previous_agent_comments()
     if not previous_comments:
@@ -189,6 +192,7 @@ def main():
         traceback.print_exc()
         ticket_info = None
         previous_comments_context = ""
+        developer_reply = {}
         print(f"   Proceeding with standard code analysis...")
 
     # Run analysis with Jira + previous comment context
